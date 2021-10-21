@@ -35,7 +35,14 @@ def addBook(book, apiKey):
         raise Exception(f"Error code {r.status_code} and text {r.text}, while trying to add book {book}.")
 
 def deleteBook(id, apiKey):
-    r = requests.delete(f"{APIHOST}/api/v1/books/{id}")
+    r = requests.delete(
+        f"{APIHOST}/api/v1/books/{id}", 
+        headers = {
+            "Content-type": "application/json",
+            "X-API-Key": apiKey
+            },
+        data = json.dumps(book)
+    )
     if r.status_code == 200:
         print(f"Book {id} was deleted.")
     else:
@@ -47,7 +54,7 @@ apiKey = getAuthToken()
 
 # Using the faker module, generate random "fake" books
 fake = Faker()
-for i in range(0, 30):
+for i in range(0, 31):
     fakeTitle = fake.catch_phrase()
     fakeAuthor = fake.name()
     fakeISBN = fake.isbn13()
@@ -56,9 +63,9 @@ for i in range(0, 30):
     addBook(book, apiKey) 
 
 # Deleting first 5 books
-for i in range(0, 4):
+for i in range(0, 5):
     deleteBook(i, apiKey) 
 
 # Deleting last 5 books
-for i in range(26, 30):
+for i in range(26, 31):
     deleteBook(i, apiKey)
